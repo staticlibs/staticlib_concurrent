@@ -226,5 +226,35 @@ void test_empty_full() {
     slassert(queue.size_guess() == 3);
 }
 
+template<typename Queue>
+void test_speed(Queue& queue) {
+    auto start = std::chrono::system_clock::now();
+    auto th = std::thread([&queue] {
+        size_t i = 0;
+        size_t sum = 0;
+        size_t fail = 0;
+        while (i < 10000000) {
+            bool success = queue.poll(i);
+            if (success) {
+                sum += i;
+            } else {
+                fail += 1;
+            }
+        }
+        std::cout << "worker exit, sum: [" << sum << "], fails: [" << fail << "]" << std::endl;
+    });
+    size_t fail = 0;
+    for (size_t i = 0; i < 10000001; i++) {
+        while (!queue.emplace(i)) {
+            fail += 1;
+        }
+    }
+    th.join();
+    std::cout << "main exit, fails: [" << fail << "]" << std::endl;
+
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+    std::cout << "millis elapsed: " << elapsed.count() << std::endl;
+}
+
 #endif	/* STATICLIB_CONCURRENT_TEST_SUPPORT_HPP */
 

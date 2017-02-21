@@ -15,16 +15,22 @@
 
 namespace sc = staticlib::concurrent;
 
+void test_queue() {
+    correctness_test_type<sc::spsc_onstack_concurrent_queue<std::string, 256>, 256> ("string");
+    correctness_test_type<sc::spsc_onstack_concurrent_queue<int, 256>, 256>("int");
+    correctness_test_type<sc::spsc_onstack_concurrent_queue<unsigned long long, 256>, 256>("unsigned long long");
+    perf_test_type<sc::spsc_onstack_concurrent_queue<std::string, 256>, 256> ("string");
+    perf_test_type<sc::spsc_onstack_concurrent_queue<int, 256>, 256>("int");
+    perf_test_type<sc::spsc_onstack_concurrent_queue<unsigned long long, 256>, 256>("unsigned long long");
+    test_destructor<sc::spsc_onstack_concurrent_queue<dtor_checker, 1024 >> ();
+    test_empty_full<sc::spsc_onstack_concurrent_queue<int, 3 >> ();
+}
+
 int main() {
     try {
-        correctness_test_type<sc::spsc_onstack_concurrent_queue<std::string, 256>, 256> ("string");
-        correctness_test_type<sc::spsc_onstack_concurrent_queue<int, 256>, 256>("int");
-        correctness_test_type<sc::spsc_onstack_concurrent_queue<unsigned long long, 256>, 256>("unsigned long long");
-        perf_test_type<sc::spsc_onstack_concurrent_queue<std::string, 256>, 256> ("string");
-        perf_test_type<sc::spsc_onstack_concurrent_queue<int, 256>, 256>("int");
-        perf_test_type<sc::spsc_onstack_concurrent_queue<unsigned long long, 256>, 256>("unsigned long long");
-        test_destructor<sc::spsc_onstack_concurrent_queue<dtor_checker, 1024>>();
-        test_empty_full<sc::spsc_onstack_concurrent_queue<int, 3>>();
+//        test_queue();
+        sc::spsc_onstack_concurrent_queue<size_t, 1024> queue;
+        test_speed(queue);
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;
