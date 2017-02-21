@@ -29,7 +29,7 @@ void test_queue() {
 int main() {
     try {
 //        test_queue();
-        sc::spsc_onstack_concurrent_queue<size_t, 1024> queue;
+        sc::spsc_onstack_concurrent_queue<size_t, 3> queue;
         test_speed(queue);
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;

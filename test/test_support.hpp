@@ -10,6 +10,7 @@
 
 // source: https://github.com/facebook/folly/blob/b75ef0a0af48766298ebcc946dd31fe0da5161e3/folly/test/ProducerConsumerQueueTest.cpp
 
+#include <atomic>
 #include <chrono>
 #include <memory>
 #include <string>

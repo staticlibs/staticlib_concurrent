@@ -16,6 +16,8 @@
 #include "staticlib/config/assert.hpp"
 #include "staticlib/config/to_string.hpp"
 
+#include "test_support.hpp"
+
 namespace sc = staticlib::concurrent;
 
 const uint32_t ELEMENTS_COUNT = 1 << 10;
@@ -291,6 +293,7 @@ void test_poll_consume() {
 
 int main() {
     try {
+        /*
         test_take();
         test_intermittent();
         test_multi();
@@ -301,6 +304,9 @@ int main() {
         test_integral();
         test_emplace_range();
         test_poll_consume();
+        */
+        sc::mpmc_blocking_queue<size_t> queue(1024);
+        test_speed(queue);
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;
