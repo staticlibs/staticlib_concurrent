@@ -8,9 +8,9 @@
 #include "staticlib/concurrent/countdown_latch.hpp"
 
 #include <atomic>
+#include <chrono>
 #include <iostream>
 #include <thread>
-#include <bits/atomic_base.h>
 
 #include "staticlib/config/assert.hpp"
 
@@ -20,10 +20,12 @@ void test_latch() {
     sc::countdown_latch latch{2};
     std::atomic<int> shared{0};
     auto th1 = std::thread([&shared, &latch]{
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         shared.fetch_add(1, std::memory_order_relaxed);
         latch.count_down();
     });
     auto th2 = std::thread([&shared, &latch] {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         shared.fetch_add(1, std::memory_order_relaxed);
         latch.count_down();
     });

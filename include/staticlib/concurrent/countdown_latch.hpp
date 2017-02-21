@@ -43,10 +43,9 @@ public:
 
     bool await(std::chrono::milliseconds timeout) {
         std::unique_lock<std::mutex> guard{mutex};
-        cv.wait_for(guard, timeout, [this] {
+        return cv.wait_for(guard, timeout, [this] {
             return 0 == count;
         });
-        return 0 == count;
     }
     
     size_t count_down() {
