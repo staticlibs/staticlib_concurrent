@@ -10,9 +10,11 @@
 
 #include <cstdint>
 #include <atomic>
+#include <condition_variable>
 #include <memory>
+#include <mutex>
 
-#include "staticlib/concurrent/spsc_waiting_queue.hpp"
+#include "staticlib/concurrent/spsc_concurrent_queue.hpp"
 
 namespace staticlib {
 namespace concurrent {
@@ -61,9 +63,8 @@ public:
     template<class ...Args>
     bool emplace(Args&&... record_args) {
         bool res = queue.emplace(std::forward<Args>(record_args)...);
-        if (res) {
-            empty_cv.notify_one();
-        }
+        empty_cv.notify_one();
+        return res;
     }
 
     /**
@@ -101,7 +102,7 @@ public:
         std::lock_guard<std::mutex> guard{mutex};
         this->unblocked = true;
         if (queue.empty()) {
-            empty_cv.notify_all();
+            empty_cv.notify_one();
         }
     }
 

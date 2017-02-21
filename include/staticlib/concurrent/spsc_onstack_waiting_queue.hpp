@@ -10,18 +10,20 @@
 
 #include <cstdint>
 #include <atomic>
+#include <condition_variable>
 #include <memory>
+#include <mutex>
 
-#include "staticlib/concurrent/spsc_onstack_waiting_queue.hpp"
+#include "staticlib/concurrent/spsc_onstack_concurrent_queue.hpp"
 
 namespace staticlib {
 namespace concurrent {
 
-template<typename T, size_t size>
-class spsc_onstack_waiting_queue : public std::enable_shared_from_this<spsc_onstack_waiting_queue<T>> {
+template<typename T, size_t Size>
+class spsc_onstack_waiting_queue : public std::enable_shared_from_this<spsc_onstack_waiting_queue<T, Size>> {
     mutable std::mutex mutex;
     std::condition_variable empty_cv;
-    spsc_onstack_concurrent_queue<T, size> queue;
+    spsc_onstack_concurrent_queue<T, Size> queue;
     bool unblocked = false;
 
 public:
@@ -31,7 +33,10 @@ public:
     using value_type = T;
 
     spsc_onstack_waiting_queue() :
-    queue(size) { }
+    queue(Size) { }
+
+    explicit spsc_onstack_waiting_queue(size_t) :
+    queue(Size) { }
 
     /**
      * Deleted copy constructor
@@ -61,9 +66,8 @@ public:
     template<class ...Args>
     bool emplace(Args&&... record_args) {
         bool res = queue.emplace(std::forward<Args>(record_args)...);
-        if (res) {
-            empty_cv.notify_one();
-        }
+        empty_cv.notify_one();
+        return res;
     }
 
     /**
@@ -101,7 +105,7 @@ public:
         std::lock_guard<std::mutex> guard{mutex};
         this->unblocked = true;
         if (queue.empty()) {
-            empty_cv.notify_all();
+            empty_cv.notify_one();
         }
     }
 
