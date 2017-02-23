@@ -181,12 +181,12 @@ public:
      * @return number of entries in the queue
      */
     size_t size() const {
-        int ret = write_idx.load(std::memory_order_acquire) -
-                read_idx.load(std::memory_order_acquire);
-        if (ret < 0) {
-            ret += ring_size;
+        size_t wi = write_idx.load(std::memory_order_acquire);
+        size_t ri = read_idx.load(std::memory_order_acquire);
+        if (wi < ri) {
+            wi += ring_size;
         }
-        return ret;
+        return wi - ri;
     }
 
     /**

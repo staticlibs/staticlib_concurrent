@@ -291,10 +291,10 @@ void test_poll_consume() {
     queue.emplace("bar");
     queue.emplace("baz");
     std::vector<my_movable_str> vec;
-    bool polled = queue.poll([&vec](my_movable_str&& el){
+    size_t polled = queue.poll([&vec](my_movable_str&& el){
         vec.emplace_back(std::move(el));
     });
-    slassert(polled);
+    slassert(3 == polled);
     slassert(3 == vec.size());
     slassert("foo" == vec[0].get_val());
     slassert("bar" == vec[1].get_val());
