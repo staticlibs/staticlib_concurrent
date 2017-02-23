@@ -9,6 +9,7 @@
 #define	STATICLIB_CONCURRENT_GROWING_BUFFER_HPP
 
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <functional>
 #include <memory>

@@ -10,6 +10,7 @@
 
 // source: https://github.com/facebook/folly/blob/b75ef0a0af48766298ebcc946dd31fe0da5161e3/folly/test/ProducerConsumerQueueTest.cpp
 
+#include <cstdlib>
 #include <atomic>
 #include <chrono>
 #include <memory>
@@ -24,7 +25,7 @@ template<class T> struct test_traits {
     }
 
     T generate() const {
-        return rand() % 26;
+        return std::rand() % 26;
     }
 };
 
