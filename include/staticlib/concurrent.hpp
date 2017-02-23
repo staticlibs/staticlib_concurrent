@@ -8,7 +8,9 @@
 #ifndef STATICLIB_CONCURRENT_HPP
 #define	STATICLIB_CONCURRENT_HPP
 
+#include "staticlib/concurrent/condition_latch.hpp"
 #include "staticlib/concurrent/countdown_latch.hpp"
+#include "staticlib/concurrent/growing_buffer.hpp"
 #include "staticlib/concurrent/mpmc_blocking_queue.hpp"
 #include "staticlib/concurrent/spsc_concurrent_queue.hpp"
 #include "staticlib/concurrent/spsc_onstack_concurrent_queue.hpp"

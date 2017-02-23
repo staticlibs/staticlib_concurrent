@@ -9,7 +9,9 @@
 
 #include <cstdlib>
 #include <chrono>
+#include <atomic>
 #include <iostream>
+#include <string>
 #include <thread>
 
 #include "staticlib/config/assert.hpp"
@@ -18,24 +20,32 @@
 
 namespace sc = staticlib::concurrent;
 
-void test_queue() {
-    correctness_test_type<sc::spsc_waiting_queue<std::string>, 0xfffe> ("string");
-    correctness_test_type<sc::spsc_waiting_queue<int>, 0xfffe>("int");
-    correctness_test_type<sc::spsc_waiting_queue<unsigned long long>, 0xfffe>("unsigned long long");
-    perf_test_type<sc::spsc_waiting_queue<std::string>, 0xfffe> ("string");
-    perf_test_type<sc::spsc_waiting_queue<int>, 0xfffe>("int");
-    perf_test_type<sc::spsc_waiting_queue<unsigned long long>, 0xfffe>("unsigned long long");
-    test_destructor<sc::spsc_waiting_queue < dtor_checker >> ();
-    test_empty_full<sc::spsc_waiting_queue<int>>();
-}
+template<typename T, size_t Size>
+class Maker {
+public:
+    using queue_type = sc::spsc_waiting_queue<T>;
+
+    std::shared_ptr<queue_type> make_queue() {
+        return std::make_shared<queue_type>(Size);
+    }
+};
 
 int main() {
     try {
-//        test_queue();
-//        sc::spsc_waiting_queue<size_t> queue1(2);
-//        test_speed(queue1);
-        sc::spsc_waiting_queue<size_t> queue2(2);
-        test_speed_wait(queue2);
+        test_correctness<Maker<std::string, 0xfffe>> ();
+        test_correctness<Maker<int, 0xfffe>> ();
+        test_correctness<Maker<unsigned long long, 0xfffe>> ();
+
+        // slow with valgrind
+//        test_perf<Maker<std::string, 0xfffe>> ();
+//        test_perf<Maker<int, 0xfffe>> ();
+//        test_perf<Maker<unsigned long long, 0xfffe>> ();
+
+        test_destructor<Maker<dtor_checker, 1024 >> ();
+        test_destructor_wrapped<Maker<dtor_checker, 4 >> ();
+        test_empty_full<Maker<int, 3 >> ();
+        
+        test_wait<Maker<std::string, 1>>();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

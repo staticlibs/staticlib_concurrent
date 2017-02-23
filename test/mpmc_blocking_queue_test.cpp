@@ -57,6 +57,16 @@ public:
     }
 };
 
+template<typename T, size_t Size>
+class Maker {
+public:
+    using queue_type = sc::mpmc_blocking_queue<T>;
+
+    std::shared_ptr<queue_type> make_queue() {
+        return std::make_shared<queue_type>(Size);
+    }
+};
+
 void test_take() {
     test_string_generator gen{};
     std::vector<std::string> data{};
@@ -291,9 +301,25 @@ void test_poll_consume() {
     slassert("baz" == vec[2].get_val());
 }
 
+void test_common() {
+    test_correctness<Maker < std::string, 0xfffe >> ();
+    test_correctness<Maker<int, 0xfffe >> ();
+    test_correctness<Maker<unsigned long long, 0xfffe >> ();
+
+    // slow with valgrind
+//    test_perf<Maker<std::string, 0xfffe>> ();
+//    test_perf<Maker<int, 0xfffe>> ();
+//    test_perf<Maker<unsigned long long, 0xfffe>> ();
+
+    test_destructor<Maker<dtor_checker, 1024>>();
+    test_destructor_wrapped<Maker<dtor_checker, 4>> ();
+    test_empty_full<Maker<int, 3>> ();
+
+    test_wait<Maker<std::string, 1>> ();
+}
+
 int main() {
     try {
-        /*
         test_take();
         test_intermittent();
         test_multi();
@@ -304,9 +330,7 @@ int main() {
         test_integral();
         test_emplace_range();
         test_poll_consume();
-        */
-        sc::mpmc_blocking_queue<size_t> queue(1024);
-        test_speed(queue);
+        test_common();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

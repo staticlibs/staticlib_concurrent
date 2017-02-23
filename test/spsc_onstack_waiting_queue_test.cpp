@@ -18,24 +18,31 @@
 
 namespace sc = staticlib::concurrent;
 
-void test_queue() {
-    correctness_test_type<sc::spsc_onstack_concurrent_queue<std::string, 256>, 256> ("string");
-    correctness_test_type<sc::spsc_onstack_concurrent_queue<int, 256>, 256>("int");
-    correctness_test_type<sc::spsc_onstack_concurrent_queue<unsigned long long, 256>, 256>("unsigned long long");
-    perf_test_type<sc::spsc_onstack_concurrent_queue<std::string, 256>, 256> ("string");
-    perf_test_type<sc::spsc_onstack_concurrent_queue<int, 256>, 256>("int");
-    perf_test_type<sc::spsc_onstack_concurrent_queue<unsigned long long, 256>, 256>("unsigned long long");
-    test_destructor<sc::spsc_onstack_concurrent_queue<dtor_checker, 1024 >> ();
-    test_empty_full<sc::spsc_onstack_concurrent_queue<int, 3 >> ();
-}
+template<typename T, size_t Size>
+class Maker {
+public:
+    using queue_type = sc::spsc_onstack_waiting_queue<T, Size>;
+
+    std::shared_ptr<queue_type> make_queue() {
+        return std::make_shared<queue_type>();
+    }
+};
 
 int main() {
     try {
-//        test_queue();
-//        sc::spsc_onstack_waiting_queue<size_t, 2> queue1;
-//        test_speed(queue1);
-        sc::spsc_onstack_waiting_queue<size_t, 2> queue2;
-        test_speed_wait(queue2);
+        // slow with valgrind
+//        test_correctness<Maker<std::string, 256>>();
+//        test_correctness<Maker<int, 256>>();
+//        test_correctness<Maker<unsigned long long, 256>>();
+//        test_perf<Maker<std::string, 1024>>();
+//        test_perf<Maker<int, 1024>>();
+//        test_perf<Maker<unsigned long long, 1024>>();
+                
+        test_destructor<Maker<dtor_checker, 1024>>();
+        test_destructor_wrapped<Maker<dtor_checker, 4>>();
+        test_empty_full<Maker<int, 3>>();
+        
+        test_wait<Maker<std::string, 1>> ();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

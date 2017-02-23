@@ -39,24 +39,33 @@ template<> struct test_traits<std::string> {
     }
 };
 
-template<class QueueType, size_t Size>
-struct perf_test {
+template<typename QueueMaker>
+struct perf_test_type {
+    typedef typename QueueMaker::queue_type QueueType;
     typedef typename QueueType::value_type T;
 
-    explicit perf_test() : queue_(Size), done_(false) { }
+    std::shared_ptr<QueueType> queue_;
+    std::atomic<bool> done_;
+    test_traits<T> traits_;
+    
+    explicit perf_test_type() : 
+    queue_(QueueMaker().make_queue()), 
+    done_(false) { }
 
-    void operator()() {
+    void run() {
         using namespace std::chrono;
-        auto const startTime = system_clock::now();
+//        auto const startTime = system_clock::now();
         std::thread producer([this] {
-            this->producer(); });
+            this->producer();
+        });
         std::thread consumer([this] {
-            this->consumer(); });
+            this->consumer();
+        });
         producer.join();
         done_ = true;
         consumer.join();
-        auto duration = duration_cast<milliseconds>(system_clock::now() - startTime);
-        std::cout << " done: " << duration.count() << "ms" << std::endl;
+//        auto duration = duration_cast<milliseconds>(system_clock::now() - startTime);
+//        std::cout << " done: " << duration.count() << "ms" << std::endl;
     }
 
     void producer() {
@@ -64,7 +73,7 @@ struct perf_test {
         // it does not run afoul of -Wsign-compare, regardless of the
         // signedness of this loop's upper bound.
         for (auto i = traits_.limit(); i > 0; --i) {
-            while (!queue_.emplace(traits_.generate())) {
+            while (!queue_->emplace(traits_.generate())) {
             }
         }
     }
@@ -72,38 +81,41 @@ struct perf_test {
     void consumer() {
         while (!done_) {
             T data;
-            queue_.poll(data);
+            queue_->poll(data);
         }
     }
-    QueueType queue_;
-    std::atomic<bool> done_;
-    test_traits<T> traits_;
 };
 
-template<class TestType> void do_test(const char* name) {
-    std::cout << " testing: " << name << std::endl;
-    std::unique_ptr<TestType> const t(new TestType());
-    (*t)();
+template<typename QueueMaker>
+static void test_perf() {
+    perf_test_type<QueueMaker>().run();
 }
 
-template<class Queue, size_t Size, bool Pop = false >
-void perf_test_type(const char* type) {
-    const size_t size = Size;
-    std::cout << "Type: " << type << std::endl;
-    do_test<perf_test<Queue, size> >("ProducerConsumerQueue");
-}
+//template<class TestType> void do_test(const char* name) {
+//    std::cout << " testing: " << name << std::endl;
+//    std::unique_ptr<TestType> const t(new TestType());
+//    (*t)();
+//}
 
-template<class QueueType, size_t Size>
-struct correctness_test {
+//template<class Queue, size_t Size, bool Pop = false >
+//void perf_test_type(const char* type) {
+//    const size_t size = Size;
+//    std::cout << "Type: " << type << std::endl;
+//    do_test<perf_test<Queue, size> >("ProducerConsumerQueue");
+//}
+
+template<typename QueueMaker>
+struct correctness_test_type {
+    typedef typename QueueMaker::queue_type QueueType;
     typedef typename QueueType::value_type T;
 
     std::vector<T> testData_;
-    QueueType queue_;
+    std::shared_ptr<QueueType> queue_;
     test_traits<T> traits_;
     std::atomic<bool> done_;
 
-    explicit correctness_test() :
-    queue_(Size),
+    explicit correctness_test_type() :
+    queue_(QueueMaker().make_queue()),
     done_(false) {
         const size_t testSize = static_cast<size_t> (traits_.limit());
         testData_.reserve(testSize);
@@ -112,11 +124,13 @@ struct correctness_test {
         }
     }
 
-    void operator()() {
+    void run() {
         std::thread producer([this] {
-            this->producer(); });
+            this->producer(); 
+        });
         std::thread consumer([this] {
-            this->consumer(); });
+            this->consumer(); 
+        });
         producer.join();
         done_ = true;
         consumer.join();
@@ -124,7 +138,7 @@ struct correctness_test {
 
     void producer() {
         for (auto& data : testData_) {
-            while (!queue_.emplace(data)) {
+            while (!queue_->emplace(data)) {
             }
         }
     }
@@ -133,12 +147,12 @@ struct correctness_test {
         for (auto expect : testData_) {
         again:
             T data;
-            if (!queue_.poll(data)) {
+            if (!queue_->poll(data)) {
                 if (done_) {
                     // Try one more read; unless there's a bug in the queue class
                     // there should still be more data sitting in the queue even
                     // though the producer thread exited.
-                    if (!queue_.poll(data)) {
+                    if (!queue_->poll(data)) {
                         throw staticlib::config::assert_exception(TRACEMSG("Finished too early ..."));
                     }
                 } else {
@@ -148,13 +162,12 @@ struct correctness_test {
             (void) expect;
             slassert(data == expect);
         }
-    }
+    }    
 };
 
-template<class Queue, size_t Size>
-void correctness_test_type(const std::string& type) {
-    std::cout << "Type: " << type << std::endl;
-    do_test<correctness_test<Queue, Size> >("ProducerConsumerQueue");
+template<typename QueueMaker>
+static void test_correctness() {
+    correctness_test_type<QueueMaker>().run();
 }
 
 struct dtor_checker {
@@ -175,46 +188,52 @@ struct dtor_checker {
 
 unsigned int dtor_checker::numInstances = 0;
 
-template<typename Queue>
+template<typename QueueMaker>
 void test_destructor() {
     // Test that orphaned elements in a ProducerConsumerQueue are
     // destroyed.
-    {
-        Queue queue(1024);
+    {        
+        auto queue = QueueMaker().make_queue();
         for (int i = 0; i < 10; ++i) {
-            slassert(queue.emplace(dtor_checker()));
+            slassert(queue->emplace(dtor_checker()));
         }
         slassert(dtor_checker::numInstances == 10);
         {
             dtor_checker ignore;
-            slassert(queue.poll(ignore));
-            slassert(queue.poll(ignore));
+            slassert(queue->poll(ignore));
+            slassert(queue->poll(ignore));
         }
         slassert(dtor_checker::numInstances == 8);
     }
     slassert(dtor_checker::numInstances == 0);
-    // Test the same thing in the case that the queue write pointer has
-    // wrapped, but the read one hasn't.
-//    {
-//        Queue queue(4);
-//        for (int i = 0; i < 3; ++i) {
-//            slassert(queue.emplace(dtor_checker()));
-//        }
-//        slassert(dtor_checker::numInstances == 3);
-//        {
-//            dtor_checker ignore;
-//            slassert(queue.poll(ignore));
-//        }
-//        slassert(dtor_checker::numInstances == 2);
-//        slassert(queue.emplace(dtor_checker()));
-//        slassert(dtor_checker::numInstances == 3);
-//    }
-//    slassert(dtor_checker::numInstances == 0);
+
 }
 
-template<typename Queue>
+template<typename QueueMaker>
+void test_destructor_wrapped() {
+    // Test the same thing in the case that the queue write pointer has
+    // wrapped, but the read one hasn't.
+    {
+        auto queue = QueueMaker().make_queue();
+        for (int i = 0; i < 3; ++i) {
+            slassert(queue->emplace(dtor_checker()));
+        }
+        slassert(dtor_checker::numInstances == 3);
+        {
+            dtor_checker ignore;
+            slassert(queue->poll(ignore));
+        }
+        slassert(dtor_checker::numInstances == 2);
+        slassert(queue->emplace(dtor_checker()));
+        slassert(dtor_checker::numInstances == 3);
+    }
+    slassert(dtor_checker::numInstances == 0);
+}
+
+template<typename QueueMaker>
 void test_empty_full() {
-    Queue queue(3);
+    auto queue_ptr = QueueMaker().make_queue();
+    auto& queue = *queue_ptr;
     slassert(queue.empty());
     slassert(!queue.full());
     slassert(queue.emplace(1));
@@ -224,7 +243,27 @@ void test_empty_full() {
     slassert(!queue.empty());
     slassert(queue.emplace(3));
     slassert(queue.full());
-    slassert(queue.size_guess() == 3);
+    slassert(queue.size() == 3);
+}
+
+template<typename QueueMaker>
+void test_wait() {
+    std::atomic<bool> flag{false};
+    auto queue = QueueMaker().make_queue();
+    auto th = std::thread([queue, &flag] {
+        std::string dest;
+        bool taken = queue->take(dest);
+                slassert(taken);
+                slassert("foo" == dest);
+                flag.store(true, std::memory_order_release);
+    });
+    slassert(!flag.load(std::memory_order_acquire));
+    std::this_thread::sleep_for(std::chrono::milliseconds{100});
+    slassert(!flag.load(std::memory_order_acquire));
+    bool emplaced = queue->emplace("foo");
+    slassert(emplaced);
+    th.join();
+    slassert(flag.load(std::memory_order_acquire));
 }
 
 template<typename Queue>

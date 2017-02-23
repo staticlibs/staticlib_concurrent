@@ -49,14 +49,18 @@ public:
     }
     
     size_t count_down() {
-        std::lock_guard<std::mutex> guard{mutex};
-        if (count > 0) {
-            count -= 1;            
+        size_t updated;
+        {
+            std::lock_guard<std::mutex> guard{mutex};
+            if (count > 0) {
+                count -= 1;            
+            }
+            updated = count;
         }
-        if (0 == count) {
+        if (0 == updated) {
             cv.notify_all();
         }
-        return count;
+        return updated;
     }
     
     size_t get_count() const {
@@ -65,10 +69,13 @@ public:
     }
     
     size_t reset(size_t count_value) {
-        std::lock_guard<std::mutex> guard{mutex};
-        size_t prev = count;
-        count = count_value;
-        if (0 == count) {
+        size_t prev = 0;
+        {
+            std::lock_guard<std::mutex> guard{mutex};
+            prev = count;
+            count = count_value;
+        }
+        if (0 == count_value) {
             cv.notify_all();
         }
         return prev;

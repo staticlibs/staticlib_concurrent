@@ -23,7 +23,7 @@ class mpmc_blocking_queue : public std::enable_shared_from_this<mpmc_blocking_qu
     mutable std::mutex mutex;
     std::condition_variable empty_cv;
     std::deque<T> queue;
-    const size_t max_size;
+    const size_t max_queue_size;
     bool unblocked = false;
     
 public:
@@ -32,8 +32,8 @@ public:
      */
     using value_type = T;
     
-    mpmc_blocking_queue(size_t max_size = 0) :
-    max_size(max_size) { }
+    explicit mpmc_blocking_queue(size_t max_queue_size = 0) :
+    max_queue_size(max_queue_size) { }
 
     mpmc_blocking_queue(const mpmc_blocking_queue&) = delete;
 
@@ -53,7 +53,7 @@ public:
     bool emplace(Args&&... record_args) {
         std::lock_guard<std::mutex> guard{mutex};
         auto size = queue.size();
-        if (0 == max_size || size < max_size) {
+        if (0 == max_queue_size || size < max_queue_size) {
             queue.emplace_back(std::forward<Args>(record_args)...);
             if (0 == size) {
                 empty_cv.notify_all();
@@ -77,7 +77,7 @@ public:
         std::lock_guard<std::mutex> guard{mutex};
         auto origin_size = queue.size();
         for (auto&& el : range) {
-            if (0 == max_size || queue.size() < max_size) {
+            if (0 == max_queue_size || queue.size() < max_queue_size) {
                 queue.emplace_back(std::move(el));
             } else {
                 break;
@@ -98,7 +98,7 @@ public:
         std::lock_guard<std::mutex> guard{mutex};
         auto origin_size = queue.size();
         for (auto& el : range) {
-            if (0 == max_size || queue.size() < max_size) {
+            if (0 == max_queue_size || queue.size() < max_queue_size) {
                 queue.emplace_back(el);
             } else {
                 break;
@@ -207,7 +207,7 @@ public:
      * 
      * @return whether queue is empty
      */
-    bool is_empty() const {
+    bool empty() const {
         std::lock_guard<std::mutex> guard{mutex};
         return queue.empty();
     }
@@ -217,12 +217,12 @@ public:
      * 
      * @return whether queue is full
      */
-    bool is_full() const {
+    bool full() const {
         std::lock_guard<std::mutex> guard{mutex};
-        if (0 == max_size) {
+        if (0 == max_queue_size) {
             return false;
         }
-        return queue.size() >= max_size;
+        return queue.size() >= max_queue_size;
     }
 
     /**
@@ -234,7 +234,16 @@ public:
         std::lock_guard<std::mutex> guard{mutex};
         return queue.size();
     }
-    
+
+    /**
+     * Accessor for max queue size specified at creation
+     * 
+     * @return max queue size
+     */
+    size_t max_size() const {
+        return max_queue_size;
+    }
+
 };
 
 } // namespace

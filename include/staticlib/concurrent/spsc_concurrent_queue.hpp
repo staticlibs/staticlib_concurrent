@@ -21,7 +21,7 @@ namespace concurrent {
 
 template<typename T>
 class spsc_concurrent_queue : public std::enable_shared_from_this<spsc_concurrent_queue<T>> {
-    const size_t size;
+    const size_t ring_size;
     T* const records;
     std::atomic<size_t> read_idx;
     std::atomic<size_t> write_idx;
@@ -38,7 +38,7 @@ public:
      * @param size queue size, must be >= 1
      */
     explicit spsc_concurrent_queue(size_t size) :
-    size(size + 1),
+    ring_size(size + 1),
     records(static_cast<T*> (std::malloc(sizeof (T) * (size + 1)))),
     read_idx(0),
     write_idx(0) {
@@ -80,7 +80,7 @@ public:
         size_t end = write_idx.load(std::memory_order_acquire);
         while (read != end) {
             records[read].~T();
-            if (++read == size) {
+            if (++read == ring_size) {
                 read = 0;
             }
         }
@@ -99,7 +99,7 @@ public:
     bool emplace(Args&&... record_args) {
         size_t const current_write = write_idx.load(std::memory_order_relaxed);
         size_t next_record = current_write + 1;
-        if (next_record == size) {
+        if (next_record == ring_size) {
             next_record = 0;
         }
         if (next_record != read_idx.load(std::memory_order_acquire)) {
@@ -126,7 +126,7 @@ public:
         }
 
         size_t next_record = current_read + 1;
-        if (next_record == size) {
+        if (next_record == ring_size) {
             next_record = 0;
         }
         record = std::move(records[current_read]);
@@ -166,7 +166,7 @@ public:
      */
     bool full() const {
         size_t next_record = write_idx.load(std::memory_order_acquire) + 1;
-        if (next_record == size) {
+        if (next_record == ring_size) {
             next_record = 0;
         }
         if (next_record != read_idx.load(std::memory_order_acquire)) {
@@ -186,11 +186,11 @@ public:
      * 
      * @return number of entries in the queue
      */
-    size_t size_guess() const {
+    size_t size() const {
         int ret = write_idx.load(std::memory_order_acquire) -
                 read_idx.load(std::memory_order_acquire);
         if (ret < 0) {
-            ret += size;
+            ret += ring_size;
         }
         return ret;
     }
@@ -201,7 +201,7 @@ public:
      * @return max queue size
      */
     size_t max_size() const {
-        return size - 1;
+        return ring_size - 1;
     }
 };
 

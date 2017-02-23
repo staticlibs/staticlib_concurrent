@@ -19,7 +19,7 @@ namespace concurrent {
 template<typename T, size_t Size>
 class spsc_onstack_concurrent_queue : public std::enable_shared_from_this<spsc_onstack_concurrent_queue<T, Size>> {
     typename std::aligned_storage<sizeof (T) * (Size + 1), std::alignment_of<T>::value>::type records_storage;
-    const size_t size = Size + 1;
+    const size_t ring_size = Size + 1;
     T* const records;    
     std::atomic<size_t> read_idx;
     std::atomic<size_t> write_idx;
@@ -31,9 +31,7 @@ public:
     using value_type = T;
 
     /**
-     * Constructor,
-     * 
-     * @param size queue size, must be >= 1
+     * Constructor
      */
     spsc_onstack_concurrent_queue() :
     records(reinterpret_cast<T*> (std::addressof(records_storage))),
@@ -78,7 +76,7 @@ public:
         size_t end = write_idx.load(std::memory_order_acquire);
         while (read != end) {
             records[read].~T();
-            if (++read == size) {
+            if (++read == ring_size) {
                 read = 0;
             }
         }
@@ -95,7 +93,7 @@ public:
     bool emplace(Args&&... record_args) {
         size_t const current_write = write_idx.load(std::memory_order_relaxed);
         size_t next_record = current_write + 1;
-        if (next_record == size) {
+        if (next_record == ring_size) {
             next_record = 0;
         }
         if (next_record != read_idx.load(std::memory_order_acquire)) {
@@ -122,7 +120,7 @@ public:
         }
 
         size_t next_record = current_read + 1;
-        if (next_record == size) {
+        if (next_record == ring_size) {
             next_record = 0;
         }
         record = std::move(records[current_read]);
@@ -162,7 +160,7 @@ public:
      */
     bool full() const {
         size_t next_record = write_idx.load(std::memory_order_acquire) + 1;
-        if (next_record == size) {
+        if (next_record == ring_size) {
             next_record = 0;
         }
         if (next_record != read_idx.load(std::memory_order_acquire)) {
@@ -182,11 +180,11 @@ public:
      * 
      * @return number of entries in the queue
      */
-    size_t size_guess() const {
+    size_t size() const {
         int ret = write_idx.load(std::memory_order_acquire) -
                 read_idx.load(std::memory_order_acquire);
         if (ret < 0) {
-            ret += size;
+            ret += ring_size;
         }
         return ret;
     }
@@ -197,7 +195,7 @@ public:
      * @return max queue size
      */
     size_t max_size() const {
-        return size - 1;
+        return ring_size - 1;
     }
 };    
     

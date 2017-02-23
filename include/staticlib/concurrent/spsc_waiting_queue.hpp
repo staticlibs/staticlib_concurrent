@@ -144,8 +144,8 @@ public:
      * 
      * @return number of entries in the queue
      */
-    size_t size_guess() const {
-        return queue.size_guess();
+    size_t size() const {
+        return queue.size();
     }
 
     /**
