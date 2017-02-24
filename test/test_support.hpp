@@ -283,6 +283,21 @@ void test_wait() {
     slassert(flag.load(std::memory_order_acquire));
 }
 
+template<typename QueueMaker>
+void test_poll_get_free_slots() {
+    auto queue = QueueMaker().make_queue();
+    std::string dest;
+    slassert(0 == queue->poll_get_free_slots(dest));
+    slassert(queue->emplace("foo"));
+    slassert(queue->emplace("bar"));
+    slassert(2 == queue->size());
+    slassert(2 == queue->poll_get_free_slots(dest));
+    slassert(1 == queue->size());
+    slassert(1 == queue->poll_get_free_slots(dest));
+    slassert(queue->empty());
+    slassert(0 == queue->poll_get_free_slots(dest));
+}
+
 template<typename Queue>
 void test_speed(Queue& queue) {
     auto start = std::chrono::system_clock::now();

@@ -98,6 +98,18 @@ public:
     }
 
     /**
+     * Attempt to read the value at the front to the queue into a variable
+     * 
+     * @param record move (or copy) the value at the front of the queue to given variable
+     * @return returns a number of free slots available in queue
+     *         before the attempt to pop requested element
+     *         (`0` if poll was unsuccessful)
+     */
+    size_t poll_get_free_slots(T & record) {
+        return queue.poll_get_free_slots(record);
+    }
+
+    /**
      * Retrieve a pointer to the item at the front of the queue
      * 
      * @return a pointer to the item, nullptr if it is empty
