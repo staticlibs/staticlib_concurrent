@@ -203,11 +203,11 @@ public:
      * 
      * @param record move (or copy) the value at the front of the queue to given variable
      * @param timeout max amount of milliseconds to wait on empty queue,
-     *        negative value (supplied by default) will cause infinite wait
+     *        zero value (supplied by default) will cause infinite wait
      * @return returns false if queue was empty after timeout, true otherwise
      */
     bool take(T& record, std::chrono::milliseconds timeout = std::chrono::milliseconds(0)) {
-        std::unique_lock<std::mutex> lock{mutex};
+        std::unique_lock<std::mutex> guard{mutex};
         if (!queue.empty()) {
             record = std::move(queue.front());
             queue.pop_front();
@@ -216,10 +216,10 @@ public:
             auto predicate = [this] {
                 return this->unblocked || !this->queue.empty();
             };
-            if (timeout > std::chrono::milliseconds(0)) {
-                empty_cv.wait_for(lock, timeout, predicate);
+            if (std::chrono::milliseconds(0) == timeout) {
+                empty_cv.wait(guard, predicate);
             } else {
-                empty_cv.wait(lock, predicate);
+                empty_cv.wait_for(guard, timeout, predicate);
             }
             if (!queue.empty()) {
                 record = std::move(queue.front());

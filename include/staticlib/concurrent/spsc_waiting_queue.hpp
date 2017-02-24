@@ -118,18 +118,54 @@ public:
         return queue.front_ptr();
     }
 
-    bool take(T& record) {
-        bool res = queue.poll(record);
-        if (res) {
+    /**
+     * Attempt to read the value at the front of the queue into a variable.
+     * This method will wait on empty queue infinitely (by default), 
+     * or up to specified amount of milliseconds
+     * 
+     * @param record move (or copy) the value at the front of the queue to given variable
+     * @param timeout max amount of milliseconds to wait on empty queue,
+     *        zero value (supplied by default) will cause infinite wait
+     * @return returns false if queue was empty after timeout, true otherwise
+     */
+    bool take(T& record, std::chrono::milliseconds timeout = std::chrono::milliseconds(0)) {
+        return take_get_free_slots(record, timeout) > 0;
+    }
+
+    /**
+     * Attempt to read the value at the front of the queue into a variable.
+     * This method will wait on empty queue infinitely (by default), 
+     * or up to specified amount of milliseconds
+     * 
+     * @param record move (or copy) the value at the front of the queue to given variable
+     * @param timeout max amount of milliseconds to wait on empty queue,
+     *        zero value (supplied by default) will cause infinite wait
+     * @return returns a number of free slots available in queue
+     *         before the attempt to pop requested element
+     *         after timeout (`0` if take was unsuccessful)
+     */
+    size_t take_get_free_slots(T& record, std::chrono::milliseconds timeout = std::chrono::milliseconds(0)) {
+        size_t res = queue.poll_get_free_slots(record);
+        if (res > 0) {
             return res;
         }
         std::unique_lock<std::mutex> guard{mutex};
-        empty_cv.wait(guard, [this] {
-            return unblocked || !queue.empty();
-        });
-        return queue.poll(record);
+        auto predicate = [this] {
+            return this->unblocked || !this->queue.empty();
+        };
+        if (std::chrono::milliseconds(0) == timeout) {
+            empty_cv.wait(guard, predicate);
+        } else {
+            empty_cv.wait_for(guard, timeout, predicate);
+        }
+        return queue.poll_get_free_slots(record);
     }
-    
+
+    /**
+     * Unblocks the queue allowing consumers to
+     * exit 'take' calls. Queue cannot be used
+     * for waiting on it after this call.
+     */
     void unblock() {
         std::lock_guard<std::mutex> guard{mutex};
         this->unblocked = true;
