@@ -29,8 +29,8 @@
 #include "staticlib/concurrent/growing_buffer.hpp"
 #include "staticlib/concurrent/mpmc_blocking_queue.hpp"
 #include "staticlib/concurrent/spsc_concurrent_queue.hpp"
-#include "staticlib/concurrent/spsc_onstack_concurrent_queue.hpp"
-#include "staticlib/concurrent/spsc_onstack_waiting_queue.hpp"
+#include "staticlib/concurrent/spsc_inobject_concurrent_queue.hpp"
+#include "staticlib/concurrent/spsc_inobject_waiting_queue.hpp"
 #include "staticlib/concurrent/spsc_waiting_queue.hpp"
 
 #endif	/* STATICLIB_CONCURRENT_HPP */

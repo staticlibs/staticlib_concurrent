@@ -15,14 +15,14 @@
  */
 
 /* 
- * File:   spsc_onstack_waiting_queue.hpp
+ * File:   spsc_inobject_waiting_queue.hpp
  * Author: alex
  *
  * Created on February 21, 2017, 9:24 AM
  */
 
-#ifndef STATICLIB_CONCURRENT_SPSC_ONSTACK_WAITING_QUEUE_HPP
-#define	STATICLIB_CONCURRENT_SPSC_ONSTACK_WAITING_QUEUE_HPP
+#ifndef STATICLIB_CONCURRENT_SPSC_INOBJECT_WAITING_QUEUE_HPP
+#define	STATICLIB_CONCURRENT_SPSC_INOBJECT_WAITING_QUEUE_HPP
 
 #include <cstdint>
 #include <atomic>
@@ -30,16 +30,16 @@
 #include <memory>
 #include <mutex>
 
-#include "staticlib/concurrent/spsc_onstack_concurrent_queue.hpp"
+#include "staticlib/concurrent/spsc_inobject_concurrent_queue.hpp"
 
 namespace staticlib {
 namespace concurrent {
 
 template<typename T, size_t Size>
-class spsc_onstack_waiting_queue : public std::enable_shared_from_this<spsc_onstack_waiting_queue<T, Size>> {
+class spsc_inobject_waiting_queue : public std::enable_shared_from_this<spsc_inobject_waiting_queue<T, Size>> {
     mutable std::mutex mutex;
     std::condition_variable empty_cv;
-    spsc_onstack_concurrent_queue<T, Size> queue;
+    spsc_inobject_concurrent_queue<T, Size> queue;
     bool unblocked = false;
 
 public:
@@ -48,10 +48,10 @@ public:
      */
     using value_type = T;
 
-    spsc_onstack_waiting_queue() :
+    spsc_inobject_waiting_queue() :
     queue(Size) { }
 
-    explicit spsc_onstack_waiting_queue(size_t) :
+    explicit spsc_inobject_waiting_queue(size_t) :
     queue(Size) { }
 
     /**
@@ -59,7 +59,7 @@ public:
      * 
      * @param other instance
      */
-    spsc_onstack_waiting_queue(const spsc_onstack_waiting_queue&) = delete;
+    spsc_inobject_waiting_queue(const spsc_inobject_waiting_queue&) = delete;
 
     /**
      * Deleted copy assignment operator
@@ -67,11 +67,11 @@ public:
      * @param other instance
      * @return reference to self
      */
-    spsc_onstack_waiting_queue& operator=(const spsc_onstack_waiting_queue&) = delete;
+    spsc_inobject_waiting_queue& operator=(const spsc_inobject_waiting_queue&) = delete;
 
-    spsc_onstack_waiting_queue(spsc_onstack_waiting_queue&&) = delete;
+    spsc_inobject_waiting_queue(spsc_inobject_waiting_queue&&) = delete;
 
-    spsc_onstack_waiting_queue& operator=(spsc_onstack_waiting_queue&&) = delete;
+    spsc_inobject_waiting_queue& operator=(spsc_inobject_waiting_queue&&) = delete;
 
     /**
      * Emplace a value at the end of the queue
@@ -180,5 +180,5 @@ public:
 } // namespace
 }
 
-#endif	/* STATICLIB_CONCURRENT_SPSC_ONSTACK_WAITING_QUEUE_HPP */
+#endif	/* STATICLIB_CONCURRENT_SPSC_INOBJECT_WAITING_QUEUE_HPP */
 

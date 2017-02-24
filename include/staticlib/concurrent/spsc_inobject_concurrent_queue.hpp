@@ -15,14 +15,14 @@
  */
 
 /* 
- * File:   spsc_onstack_concurrent_queue.hpp
+ * File:   spsc_inobject_concurrent_queue.hpp
  * Author: alex
  *
  * Created on February 21, 2017, 9:22 AM
  */
 
-#ifndef STATICLIB_CONCURRENT_SPSC_ONSTACK_CONCURRENT_QUEUE_HPP
-#define	STATICLIB_CONCURRENT_SPSC_ONSTACK_CONCURRENT_QUEUE_HPP
+#ifndef STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP
+#define	STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP
 
 #include <cstdint>
 #include <atomic>
@@ -33,7 +33,7 @@ namespace staticlib {
 namespace concurrent {
 
 template<typename T, size_t Size>
-class spsc_onstack_concurrent_queue : public std::enable_shared_from_this<spsc_onstack_concurrent_queue<T, Size>> {
+class spsc_inobject_concurrent_queue : public std::enable_shared_from_this<spsc_inobject_concurrent_queue<T, Size>> {
     typename std::aligned_storage<sizeof (T) * (Size + 1), std::alignment_of<T>::value>::type records_storage;
     const size_t ring_size = Size + 1;
     T* const records;    
@@ -49,12 +49,12 @@ public:
     /**
      * Constructor
      */
-    spsc_onstack_concurrent_queue() :
+    spsc_inobject_concurrent_queue() :
     records(reinterpret_cast<T*> (std::addressof(records_storage))),
     read_idx(0),
     write_idx(0) { }
 
-    explicit spsc_onstack_concurrent_queue(size_t) :
+    explicit spsc_inobject_concurrent_queue(size_t) :
     records(reinterpret_cast<T*> (std::addressof(records_storage))),
     read_idx(0),
     write_idx(0) { }
@@ -64,7 +64,7 @@ public:
      * 
      * @param other instance
      */
-    spsc_onstack_concurrent_queue(const spsc_onstack_concurrent_queue&) = delete;
+    spsc_inobject_concurrent_queue(const spsc_inobject_concurrent_queue&) = delete;
 
     /**
      * Deleted copy assignment operator
@@ -72,16 +72,16 @@ public:
      * @param other instance
      * @return reference to self
      */
-    spsc_onstack_concurrent_queue& operator=(const spsc_onstack_concurrent_queue&) = delete;
+    spsc_inobject_concurrent_queue& operator=(const spsc_inobject_concurrent_queue&) = delete;
 
-    spsc_onstack_concurrent_queue(spsc_onstack_concurrent_queue&&) = delete;
+    spsc_inobject_concurrent_queue(spsc_inobject_concurrent_queue&&) = delete;
 
-    spsc_onstack_concurrent_queue& operator=(spsc_onstack_concurrent_queue&&) = delete;
+    spsc_inobject_concurrent_queue& operator=(spsc_inobject_concurrent_queue&&) = delete;
 
     /**
      * Destructor
      */
-    ~spsc_onstack_concurrent_queue() {
+    ~spsc_inobject_concurrent_queue() {
         // We need to destruct anything that may still exist in our queue.
         // (No real synchronization needed at destructor time: only one
         // thread can be doing this.)
@@ -218,5 +218,5 @@ public:
 } // namespace
 }
 
-#endif	/* STATICLIB_CONCURRENT_SPSC_ONSTACK_CONCURRENT_QUEUE_HPP */
+#endif	/* STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP */
 
