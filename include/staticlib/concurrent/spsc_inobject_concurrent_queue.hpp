@@ -32,6 +32,9 @@
 namespace staticlib {
 namespace concurrent {
 
+/**
+ * Wait-free queue with fixed-size on-stack storage
+ */
 template<typename T, size_t Size>
 class spsc_inobject_concurrent_queue : public std::enable_shared_from_this<spsc_inobject_concurrent_queue<T, Size>> {
     typename std::aligned_storage<sizeof (T) * (Size + 1), std::alignment_of<T>::value>::type records_storage;
@@ -54,28 +57,24 @@ public:
     read_idx(0),
     write_idx(0) { }
 
-    explicit spsc_inobject_concurrent_queue(size_t) :
-    records(reinterpret_cast<T*> (std::addressof(records_storage))),
-    read_idx(0),
-    write_idx(0) { }
-    
     /**
      * Deleted copy constructor
-     * 
-     * @param other instance
      */
     spsc_inobject_concurrent_queue(const spsc_inobject_concurrent_queue&) = delete;
 
     /**
      * Deleted copy assignment operator
-     * 
-     * @param other instance
-     * @return reference to self
      */
     spsc_inobject_concurrent_queue& operator=(const spsc_inobject_concurrent_queue&) = delete;
 
+    /**
+     * Deleted move constructor
+     */
     spsc_inobject_concurrent_queue(spsc_inobject_concurrent_queue&&) = delete;
 
+    /**
+     * Deleted move assignment operator
+     */
     spsc_inobject_concurrent_queue& operator=(spsc_inobject_concurrent_queue&&) = delete;
 
     /**

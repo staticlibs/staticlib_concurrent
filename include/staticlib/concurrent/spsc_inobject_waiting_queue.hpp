@@ -35,6 +35,9 @@
 namespace staticlib {
 namespace concurrent {
 
+/**
+ * Queue with the same logic as `spsc_waiting_queue` with additional optional blocking `take` operation
+ */
 template<typename T, size_t Size>
 class spsc_inobject_waiting_queue : public std::enable_shared_from_this<spsc_inobject_waiting_queue<T, Size>> {
     mutable std::mutex mutex;
@@ -49,28 +52,26 @@ public:
     using value_type = T;
 
     spsc_inobject_waiting_queue() :
-    queue(Size) { }
-
-    explicit spsc_inobject_waiting_queue(size_t) :
-    queue(Size) { }
+    queue() { }
 
     /**
      * Deleted copy constructor
-     * 
-     * @param other instance
      */
     spsc_inobject_waiting_queue(const spsc_inobject_waiting_queue&) = delete;
 
     /**
      * Deleted copy assignment operator
-     * 
-     * @param other instance
-     * @return reference to self
      */
     spsc_inobject_waiting_queue& operator=(const spsc_inobject_waiting_queue&) = delete;
 
+    /**
+     * Deleted move constructor
+     */
     spsc_inobject_waiting_queue(spsc_inobject_waiting_queue&&) = delete;
 
+    /**
+     * Deleted move assignment operator
+     */
     spsc_inobject_waiting_queue& operator=(spsc_inobject_waiting_queue&&) = delete;
 
     /**

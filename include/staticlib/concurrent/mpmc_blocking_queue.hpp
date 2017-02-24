@@ -34,6 +34,10 @@
 namespace staticlib {
 namespace concurrent {
 
+/**
+ * Optionally bounded growing FIFO blocking queue with support for blocking and 
+ * non-blocking multiple consumers and always non-blocking multiple producers
+ */
 template<typename T>
 class mpmc_blocking_queue : public std::enable_shared_from_this<mpmc_blocking_queue<T>> {
     mutable std::mutex mutex;
@@ -51,12 +55,24 @@ public:
     explicit mpmc_blocking_queue(size_t max_queue_size = 0) :
     max_queue_size(max_queue_size) { }
 
+    /**
+     * Deleted copy constructor
+     */
     mpmc_blocking_queue(const mpmc_blocking_queue&) = delete;
 
+    /**
+     * Deleted copy assignment operator
+     */
     mpmc_blocking_queue& operator=(const mpmc_blocking_queue&) = delete;
 
+    /**
+     * Deleted move constructor
+     */
     mpmc_blocking_queue(mpmc_blocking_queue&&) = delete;
 
+    /**
+     * Deleted move assignment operator
+     */
     mpmc_blocking_queue& operator=(mpmc_blocking_queue&&) = delete;
 
     /**

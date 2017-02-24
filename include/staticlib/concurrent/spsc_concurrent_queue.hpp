@@ -35,6 +35,9 @@
 namespace staticlib {
 namespace concurrent {
 
+/**
+ * Wait-free queue with fixed-size heap storage
+ */
 template<typename T>
 class spsc_concurrent_queue : public std::enable_shared_from_this<spsc_concurrent_queue<T>> {
     const size_t ring_size;
@@ -65,25 +68,26 @@ public:
 
     /**
      * Deleted copy constructor
-     * 
-     * @param other instance
      */
     spsc_concurrent_queue(const spsc_concurrent_queue&) = delete;
 
     /**
      * Deleted copy assignment operator
-     * 
-     * @param other instance
-     * @return reference to self
      */
     spsc_concurrent_queue& operator=(const spsc_concurrent_queue&) = delete;
 
+    /**
+     * Deleted move constructor
+     */
     spsc_concurrent_queue(spsc_concurrent_queue&&) = delete;
 
+    /**
+     * Deleted move assignment operator
+     */
     spsc_concurrent_queue& operator=(spsc_concurrent_queue&&) = delete;
 
     /**
-     * Destructor
+     * Destructor, will call destructors for all elements left inside the queue
      */
     ~spsc_concurrent_queue() {
         // We need to destruct anything that may still exist in our queue.

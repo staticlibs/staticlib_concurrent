@@ -33,21 +33,42 @@
 namespace staticlib {
 namespace concurrent {
 
+/**
+ * Synchronization aid that allows one or more threads to wait until a set
+of operations being performed in other threads completes
+ */
 class countdown_latch : public std::enable_shared_from_this<countdown_latch> {
     mutable std::mutex mutex;
     std::condition_variable cv;
     size_t count;
     
 public:
+    /**
+     * Constructor
+     * 
+     * @param count initial value of the counter
+     */
     explicit countdown_latch(size_t count) :
     count(count) { }
     
+    /**
+     * Deleted copy constructor
+     */
     countdown_latch(const countdown_latch&) = delete;
-    
+
+    /**
+     * Deleted copy assignment operator
+     */
     countdown_latch& operator=(const countdown_latch&) = delete;
-    
+
+    /**
+     * Deleted move constructor
+     */
     countdown_latch(countdown_latch&&) = delete;
-    
+
+    /**
+     * Deleted move assignment operator
+     */
     countdown_latch& operator=(countdown_latch&&) = delete;
     
     void await() {
