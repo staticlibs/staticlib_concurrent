@@ -98,18 +98,6 @@ public:
     }
 
     /**
-     * Attempt to read the value at the front to the queue into a variable
-     * 
-     * @param record move (or copy) the value at the front of the queue to given variable
-     * @return returns a number of free slots available in queue
-     *         before the attempt to pop requested element
-     *         (`0` if poll was unsuccessful)
-     */
-    size_t poll_get_free_slots(T & record) {
-        return queue.poll_get_free_slots(record);
-    }
-
-    /**
      * Retrieve a pointer to the item at the front of the queue
      * 
      * @return a pointer to the item, nullptr if it is empty
@@ -129,25 +117,9 @@ public:
      * @return returns false if queue was empty after timeout, true otherwise
      */
     bool take(T& record, std::chrono::milliseconds timeout = std::chrono::milliseconds(0)) {
-        return take_get_free_slots(record, timeout) > 0;
-    }
-
-    /**
-     * Attempt to read the value at the front of the queue into a variable.
-     * This method will wait on empty queue infinitely (by default), 
-     * or up to specified amount of milliseconds
-     * 
-     * @param record move (or copy) the value at the front of the queue to given variable
-     * @param timeout max amount of milliseconds to wait on empty queue,
-     *        zero value (supplied by default) will cause infinite wait
-     * @return returns a number of free slots available in queue
-     *         before the attempt to pop requested element
-     *         after timeout (`0` if take was unsuccessful)
-     */
-    size_t take_get_free_slots(T& record, std::chrono::milliseconds timeout = std::chrono::milliseconds(0)) {
-        size_t res = queue.poll_get_free_slots(record);
-        if (res > 0) {
-            return res;
+        bool res = queue.poll(record);
+        if (res) {
+            return true;
         }
         std::unique_lock<std::mutex> guard{mutex};
         auto predicate = [this] {
@@ -158,7 +130,7 @@ public:
         } else {
             empty_cv.wait_for(guard, timeout, predicate);
         }
-        return queue.poll_get_free_slots(record);
+        return queue.poll(record);
     }
 
     /**

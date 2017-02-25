@@ -44,20 +44,26 @@ public:
 
 }
 
+/**
+ * Non-shrinkable `char` heap buffer with non-destructive `move` (the same as `copy`) logic,
+ * grows if needed on `move-in` operation
+ */
 class growing_buffer {
     size_t length;
     std::unique_ptr<char, detail_growing_buffer::free_deleter> buf;
 
-public:    
-    growing_buffer(const char* buffer, size_t length) :
-    length(length),
-    buf(static_cast<char*> (std::malloc(length)), detail_growing_buffer::free_deleter()) {
-        if (nullptr == buf.get()) {
-            throw std::bad_alloc();
-        }
-        std::memcpy(data(), buffer, length);
-    }
+public:
+    /**
+     * Constructor, creates empty buffer
+     */
+    growing_buffer() :
+    length(0) { }
     
+    /**
+     * Copy constructor
+     * 
+     * @param other instance
+     */
     growing_buffer(const growing_buffer& other) :
     length(other.size()),
     buf(static_cast<char*> (std::malloc(length)), detail_growing_buffer::free_deleter()) {
@@ -67,29 +73,59 @@ public:
         std::memcpy(data(), other.data(), length);
     }
     
+    /**
+     * Copy assignment operator
+     * 
+     * @param other instance
+     * @return this instance
+     */
     growing_buffer& operator=(const growing_buffer& other) {
-        if (length < other.length) {
-            buf.reset(static_cast<char*> (std::malloc(other.length)));
+        resize(other.length);
+        std::memcpy(buf.get(), other.data(), length);
+        return *this;
+    }
+
+    /**
+     * Resize buffer extending data storage if necessary
+     * 
+     * @param new_size new size
+     */
+    void resize(size_t new_size) {
+        if (new_size > length) {
+            buf.reset(static_cast<char*> (std::malloc(new_size)));
             if (nullptr == buf.get()) {
                 throw std::bad_alloc();
             }
         }
-        length = other.length;
-        std::memcpy(buf.get(), other.data(), length);
-        return *this;
+        length = new_size;
     }
     
+    /**
+     * Pointer to stored data
+     * 
+     * @return pointer to stored data
+     */
     char* data() {
         return buf.get();
     }
 
+    /**
+     * Pointer to stored data
+     * 
+     * @return pointer to stored data
+     */
     const char* data() const {
         return buf.get();
     }
     
+    /**
+     * Buffer size
+     * 
+     * @return buffer size
+     */
     size_t size() const {
         return length;
-    }
+    }   
 };
 
 } // namespace

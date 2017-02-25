@@ -128,25 +128,11 @@ public:
      * @return returns false if queue was empty, true otherwise
      */
     bool poll(T& record) {
-        return poll_get_free_slots(record) > 0;
-    }
-
-    /**
-     * Attempt to read the value at the front to the queue into a variable
-     * 
-     * @param record move (or copy) the value at the front of the queue to given variable
-     * @return returns a number of free slots available in queue
-     *         before the attempt to pop requested element
-     *         (`0` if poll was unsuccessful)
-     */
-    size_t poll_get_free_slots(T& record) {
         size_t const current_read = read_idx.load(std::memory_order_relaxed);
-        size_t const current_write = write_idx.load(std::memory_order_acquire);
-        if (current_read == current_write) {
+        if (current_read == write_idx.load(std::memory_order_acquire)) {
             // queue is empty
-            return 0;
+            return false;
         }
-
         size_t next_record = current_read + 1;
         if (next_record == ring_size) {
             next_record = 0;
@@ -154,7 +140,7 @@ public:
         record = std::move(records[current_read]);
         records[current_read].~T();
         read_idx.store(next_record, std::memory_order_release);
-        return current_write - current_read;
+        return true;
     }
 
     /**

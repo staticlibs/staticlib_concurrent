@@ -57,7 +57,6 @@ int main() {
         test_destructor<Maker<dtor_checker, 1024>>();
         test_destructor_wrapped<Maker<dtor_checker, 4>>();
         test_empty_full<Maker<int, 3>>();
-        test_poll_get_free_slots<Maker<std::string, 2>> ();
         
         test_wait<Maker<std::string, 1>> ();
     } catch (const std::exception& e) {

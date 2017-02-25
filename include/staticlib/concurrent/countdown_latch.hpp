@@ -71,6 +71,9 @@ public:
      */
     countdown_latch& operator=(countdown_latch&&) = delete;
     
+    /**
+     * Wait until the counter will go to zero
+     */
     void await() {
         std::unique_lock<std::mutex> guard{mutex};
         cv.wait(guard, [this] {
@@ -78,6 +81,14 @@ public:
         });
     }
 
+    /**
+     * Wait until the counter will got to zero
+     * or timeout will be exceeded
+     * 
+     * @param timeout wait timeout
+     * @return true if counter is zero, false
+     *         if exit on timeout
+     */
     bool await(std::chrono::milliseconds timeout) {
         std::unique_lock<std::mutex> guard{mutex};
         return cv.wait_for(guard, timeout, [this] {
@@ -85,6 +96,11 @@ public:
         });
     }
     
+    /**
+     * Decrement counter by 1
+     * 
+     * @return updated value of counter
+     */
     size_t count_down() {
         size_t updated;
         {
@@ -100,11 +116,22 @@ public:
         return updated;
     }
     
+    /**
+     * Get current counter value
+     * 
+     * @return current counter value
+     */
     size_t get_count() const {
         std::lock_guard<std::mutex> guard{mutex};
         return count;
     }
     
+    /**
+     * Reset counter to new value
+     * 
+     * @param count_value new value
+     * @return counter value before reset
+     */
     size_t reset(size_t count_value) {
         size_t prev = 0;
         {

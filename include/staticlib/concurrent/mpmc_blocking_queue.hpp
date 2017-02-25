@@ -159,25 +159,6 @@ public:
     }
 
     /**
-     * Attempt to read the value at the front to the queue into a variable
-     * 
-     * @param record move (or copy) the value at the front of the queue to given variable
-     * @return returns a number of free slots available in queue
-     *         before the attempt to pop requested element
-     *         (`0` if poll was unsuccessful)
-     */
-    size_t poll_get_free_slots(T & record) {
-        std::lock_guard<std::mutex> guard{mutex};
-        if (!queue.empty()) {
-            record = std::move(queue.front());
-            queue.pop_front();
-            return queue.size() + 1;
-        } else {
-            return 0;
-        }
-    }
-    
-    /**
      * Consume all the immediately-available 
      * contents of this queue into specified functor
      * 

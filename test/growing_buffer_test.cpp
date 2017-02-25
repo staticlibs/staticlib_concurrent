@@ -23,6 +23,7 @@
 
 #include "staticlib/concurrent/condition_latch.hpp"
 
+#include <cstring>
 #include <atomic>
 #include <iostream>
 #include <memory>
@@ -34,11 +35,14 @@
 namespace sc = staticlib::concurrent;
 
 void test_copy() {
-    sc::growing_buffer foo{"foO", 3};
+    sc::growing_buffer foo;
+    foo.resize(3);
+    std::memcpy(foo.data(), "foO", 3);
     slassert(3 == foo.size());
     
     sc::growing_buffer bar = std::move(foo);
-    sc::growing_buffer baz{"a", 1};
+    sc::growing_buffer baz;
+    baz.resize(1);
     baz = std::move(foo);
     
     slassert(3 == foo.size());
