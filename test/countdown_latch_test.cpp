@@ -30,10 +30,8 @@
 
 #include "staticlib/config/assert.hpp"
 
-namespace sc = staticlib::concurrent;
-
 void test_latch() {
-    sc::countdown_latch latch{2};
+    sl::concurrent::countdown_latch latch{2};
     std::atomic<int> shared{0};
     auto th1 = std::thread([&shared, &latch]{
         std::this_thread::sleep_for(std::chrono::milliseconds(100));

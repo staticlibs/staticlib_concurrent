@@ -30,11 +30,9 @@
 
 #include "staticlib/config/assert.hpp"
 
-namespace sc = staticlib::concurrent;
-
 void test_latch() {
     std::atomic<bool> flag{false};
-    std::shared_ptr<sc::condition_latch> latch = std::make_shared<sc::condition_latch>([&flag] {
+    std::shared_ptr<sl::concurrent::condition_latch> latch = std::make_shared<sl::concurrent::condition_latch>([&flag] {
        return flag.load(std::memory_order_acquire);
     });
     std::atomic<int> shared{0};

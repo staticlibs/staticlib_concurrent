@@ -32,16 +32,14 @@
 #include "staticlib/config/assert.hpp"
 #include "staticlib/concurrent/growing_buffer.hpp"
 
-namespace sc = staticlib::concurrent;
-
 void test_copy() {
-    sc::growing_buffer foo;
+    sl::concurrent::growing_buffer foo;
     foo.resize(3);
     std::memcpy(foo.data(), "foO", 3);
     slassert(3 == foo.size());
     
-    sc::growing_buffer bar = std::move(foo);
-    sc::growing_buffer baz;
+    sl::concurrent::growing_buffer bar = std::move(foo);
+    sl::concurrent::growing_buffer baz;
     baz.resize(1);
     baz = std::move(foo);
     

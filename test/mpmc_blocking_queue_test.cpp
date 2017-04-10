@@ -30,11 +30,9 @@
 #include <sstream>
 
 #include "staticlib/config/assert.hpp"
-#include "staticlib/config/to_string.hpp"
+#include "staticlib/support.hpp"
 
 #include "test_support.hpp"
-
-namespace sc = staticlib::concurrent;
 
 const uint32_t ELEMENTS_COUNT = 1 << 10;
 
@@ -44,7 +42,7 @@ class test_string_generator {
 public:
 
     std::string generate(uint32_t size) {
-        return std::string(size, staticlib::config::to_string(counter++)[0]);
+        return std::string(size, sl::support::to_string(counter++)[0]);
     }
 };
 
@@ -74,9 +72,9 @@ public:
 };
 
 template<typename T, size_t Size>
-class Maker {
+class queue_maker {
 public:
-    using queue_type = sc::mpmc_blocking_queue<T>;
+    using queue_type = sl::concurrent::mpmc_blocking_queue<T>;
 
     std::shared_ptr<queue_type> make_queue() {
         return std::make_shared<queue_type>(Size);
@@ -86,7 +84,7 @@ public:
 void test_take() {
     test_string_generator gen{};
     std::vector<std::string> data{};
-    sc::mpmc_blocking_queue<my_movable_str> queue{};
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{};
     for (size_t i = 0; i < ELEMENTS_COUNT; i++) {
         std::string str = gen.generate(42);
         data.push_back(str);
@@ -104,7 +102,7 @@ void test_take() {
 }
 
 void test_intermittent() {
-    sc::mpmc_blocking_queue<my_movable_str> queue{};
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{};
     std::thread producer([&] {
         test_string_generator gen{};
         for (size_t i = 0; i < 10; i++) {
@@ -135,7 +133,7 @@ void test_intermittent() {
 }
 
 void test_multi() {
-    sc::mpmc_blocking_queue<my_movable_str> queue{};
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{};
     auto take = [&](size_t count) {
         for (size_t i = 0; i < count; i++) {
             my_movable_str el{""};
@@ -174,7 +172,7 @@ void test_multi() {
 void test_poll() {
     test_string_generator gen{};
     std::vector<std::string> data{};
-    sc::mpmc_blocking_queue<my_movable_str> queue{};
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{};
     for (size_t i = 0; i < ELEMENTS_COUNT; i++) {
         std::string str = gen.generate(42);
         data.push_back(str);
@@ -195,7 +193,7 @@ void test_poll() {
 }
 
 void test_take_wait() {
-    sc::mpmc_blocking_queue<my_movable_str> queue{};
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{};
     std::thread producer([&queue] {
         std::this_thread::sleep_for(std::chrono::milliseconds{200});
         queue.emplace("aaa");
@@ -229,7 +227,7 @@ void test_take_wait() {
 void test_threshold() {
     test_string_generator gen{};
     std::vector<std::string> data{};
-    sc::mpmc_blocking_queue<my_movable_str> queue{ELEMENTS_COUNT};
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{ELEMENTS_COUNT};
     for (size_t i = 0; i < ELEMENTS_COUNT; i++) {
         std::string str = gen.generate(42);
         data.push_back(str);
@@ -252,7 +250,7 @@ void test_threshold() {
 }
 
 void test_unblock() {
-    sc::mpmc_blocking_queue<my_movable_str> queue{};
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{};
     std::thread consumer([&] {
         my_movable_str el{""};
         bool success = queue.poll(el);
@@ -266,7 +264,7 @@ void test_unblock() {
 }
 
 void test_integral() {
-    sc::mpmc_blocking_queue<int> queue{};
+    sl::concurrent::mpmc_blocking_queue<int> queue{};
     int a = 42;
     int b = 43;
     int& b_ref = b;
@@ -285,7 +283,7 @@ void test_integral() {
 }
 
 void test_emplace_range() {
-    sc::mpmc_blocking_queue<my_movable_str> queue;
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue;
     std::vector<my_movable_str> vec;
     vec.emplace_back("foo");
     vec.emplace_back("bar");
@@ -302,7 +300,7 @@ void test_emplace_range() {
 }
 
 void test_poll_consume() {
-    sc::mpmc_blocking_queue<my_movable_str> queue;
+    sl::concurrent::mpmc_blocking_queue<my_movable_str> queue;
     queue.emplace("foo");
     queue.emplace("bar");
     queue.emplace("baz");
@@ -318,20 +316,20 @@ void test_poll_consume() {
 }
 
 void test_common() {
-    test_correctness<Maker < std::string, 0xfffe >> ();
-    test_correctness<Maker<int, 0xfffe >> ();
-    test_correctness<Maker<unsigned long long, 0xfffe >> ();
+    test_correctness<queue_maker < std::string, 0xfffe >> ();
+    test_correctness<queue_maker<int, 0xfffe >> ();
+    test_correctness<queue_maker<unsigned long long, 0xfffe >> ();
 
     // slow with valgrind
-//    test_perf<Maker<std::string, 0xfffe>> ();
-//    test_perf<Maker<int, 0xfffe>> ();
-//    test_perf<Maker<unsigned long long, 0xfffe>> ();
+//    test_perf<queue_maker<std::string, 0xfffe>> ();
+//    test_perf<queue_maker<int, 0xfffe>> ();
+//    test_perf<queue_maker<unsigned long long, 0xfffe>> ();
 
-    test_destructor<Maker<dtor_checker, 1024>>();
-    test_destructor_wrapped<Maker<dtor_checker, 4>> ();
-    test_empty_full<Maker<int, 3>> ();
+    test_destructor<queue_maker<dtor_checker, 1024>>();
+    test_destructor_wrapped<queue_maker<dtor_checker, 4>> ();
+    test_empty_full<queue_maker<int, 3>> ();
     
-    test_wait<Maker<std::string, 1>> ();
+    test_wait<queue_maker<std::string, 1>> ();
 }
 
 int main() {

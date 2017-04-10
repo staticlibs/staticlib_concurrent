@@ -15,7 +15,7 @@
 cmake_minimum_required ( VERSION 2.8.12 )
 
 project ( staticlib_concurrent CXX )
-set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.0 )
+set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.0.1 )
 set ( ${PROJECT_NAME}_DESCRIPTION "Staticlibs concurrent library" )
 set ( ${PROJECT_NAME}_URL https://github.com/staticlibs/staticlib_concurrent )
 
@@ -38,5 +38,8 @@ add_custom_target ( ${PROJECT_NAME} SOURCES ${${PROJECT_NAME}_HEADERS} )
 
 # pkg-config
 set ( ${PROJECT_NAME}_PC_CFLAGS "-I${CMAKE_CURRENT_LIST_DIR}/include" )
+if ( CMAKE_SYSTEM_NAME MATCHES "Linux" )
+    set ( ${PROJECT_NAME}_PC_LIBS "-lpthread" )
+endif ( )
 configure_file ( ${CMAKE_CURRENT_LIST_DIR}/resources/pkg-config.in 
         ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/pkgconfig/${PROJECT_NAME}.pc )

@@ -20,7 +20,7 @@ of operations being performed in other threads completes
  - `growing_buffer` non-shrinkable `char` heap buffer with non-destructive `move` (the same as `copy`) logic,
 grows if needed on `move-in` operation
 
-All queues and locks are non-copyable, non-movable and inherit from [enable_shared_from_this](http://en.cppreference.com/w/cpp/memory/enable_shared_from_this).
+All queues and locks are non-copyable, non-movable and inherit from [enable_shared_from_this](http://en.cppreference.com/w/cpp/memory/enable_shared_from_this)
 to be used inside `std::shared_ptr`.
 
 This library is header-only and has no dependencies.
@@ -34,6 +34,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**2017-04-10**
+
+ * version 1.0.1
+ * minor cmake fixes
 
 **2017-02-24**
 

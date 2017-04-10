@@ -33,5 +33,8 @@
 #include "staticlib/concurrent/spsc_inobject_waiting_queue.hpp"
 #include "staticlib/concurrent/spsc_waiting_queue.hpp"
 
+// export namespace with shorter name
+namespace sl = staticlib;
+
 #endif	/* STATICLIB_CONCURRENT_HPP */
 
