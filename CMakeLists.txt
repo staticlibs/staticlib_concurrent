@@ -39,7 +39,7 @@ add_custom_target ( ${PROJECT_NAME} SOURCES ${${PROJECT_NAME}_HEADERS} )
 # pkg-config
 set ( ${PROJECT_NAME}_PC_CFLAGS "-I${CMAKE_CURRENT_LIST_DIR}/include" )
 if ( CMAKE_SYSTEM_NAME MATCHES "Linux" )
-    set ( ${PROJECT_NAME}_PC_LIBS "-lpthread" )
+    set ( ${PROJECT_NAME}_PC_LIBS_PRIVATE "-lpthread" )
 endif ( )
 configure_file ( ${CMAKE_CURRENT_LIST_DIR}/resources/pkg-config.in 
         ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/pkgconfig/${PROJECT_NAME}.pc )
