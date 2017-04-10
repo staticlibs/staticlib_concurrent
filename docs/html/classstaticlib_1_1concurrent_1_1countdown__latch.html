@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_concurrent
-   &#160;<span id="projectnumber">1.0</span>
+   &#160;<span id="projectnumber">1.0.1</span>
    </div>
   </td>
  </tr>
@@ -112,10 +112,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab92909b05d3f18613c574e08c66416c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html">countdown_latch</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html#ab92909b05d3f18613c574e08c66416c8">operator=</a> (<a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html">countdown_latch</a> &amp;&amp;)</td></tr>
 <tr class="memdesc:ab92909b05d3f18613c574e08c66416c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted move assignment operator.  <a href="#ab92909b05d3f18613c574e08c66416c8"></a><br/></td></tr>
 <tr class="memitem:a99f16b5a6727d594d7b62cfe5c7f4757"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html#a99f16b5a6727d594d7b62cfe5c7f4757">await</a> ()</td></tr>
+<tr class="memdesc:a99f16b5a6727d594d7b62cfe5c7f4757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the counter will go to zero.  <a href="#a99f16b5a6727d594d7b62cfe5c7f4757"></a><br/></td></tr>
 <tr class="memitem:a39dbc67d6e86ec31f75eb374481de3ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html#a39dbc67d6e86ec31f75eb374481de3ed">await</a> (std::chrono::milliseconds timeout)</td></tr>
+<tr class="memdesc:a39dbc67d6e86ec31f75eb374481de3ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait until the counter will got to zero or timeout will be exceeded.  <a href="#a39dbc67d6e86ec31f75eb374481de3ed"></a><br/></td></tr>
 <tr class="memitem:a4da5f0f9dd6f9736f673e4e8c2ee2da7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html#a4da5f0f9dd6f9736f673e4e8c2ee2da7">count_down</a> ()</td></tr>
+<tr class="memdesc:a4da5f0f9dd6f9736f673e4e8c2ee2da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrement counter by 1.  <a href="#a4da5f0f9dd6f9736f673e4e8c2ee2da7"></a><br/></td></tr>
 <tr class="memitem:a49fec0466e2a5d37ee716d2d3ef57059"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html#a49fec0466e2a5d37ee716d2d3ef57059">get_count</a> () const </td></tr>
+<tr class="memdesc:a49fec0466e2a5d37ee716d2d3ef57059"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get current counter value.  <a href="#a49fec0466e2a5d37ee716d2d3ef57059"></a><br/></td></tr>
 <tr class="memitem:a9d1b59f1f38c7c7b56d43e4bb8ed905d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1countdown__latch.html#a9d1b59f1f38c7c7b56d43e4bb8ed905d">reset</a> (size_t count_value)</td></tr>
+<tr class="memdesc:a9d1b59f1f38c7c7b56d43e4bb8ed905d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset counter to new value.  <a href="#a9d1b59f1f38c7c7b56d43e4bb8ed905d"></a><br/></td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Synchronization aid that allows one or more threads to wait until a set of operations being performed in other threads completes. </p>
@@ -210,6 +215,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Wait until the counter will go to zero. </p>
+
 </div>
 </div>
 <a class="anchor" id="a39dbc67d6e86ec31f75eb374481de3ed"></a>
@@ -234,6 +241,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Wait until the counter will got to zero or timeout will be exceeded. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">timeout</td><td>wait timeout </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if counter is zero, false if exit on timeout </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a4da5f0f9dd6f9736f673e4e8c2ee2da7"></a>
@@ -257,6 +273,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Decrement counter by 1. </p>
+<dl class="section return"><dt>Returns</dt><dd>updated value of counter </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a49fec0466e2a5d37ee716d2d3ef57059"></a>
@@ -279,6 +298,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get current counter value. </p>
+<dl class="section return"><dt>Returns</dt><dd>current counter value </dd></dl>
 
 </div>
 </div>
@@ -340,6 +362,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Reset counter to new value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">count_value</td><td>new value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>counter value before reset </dd></dl>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
@@ -348,7 +379,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 24 2017 10:32:15 for staticlib_concurrent by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 10 2017 11:07:34 for staticlib_concurrent by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

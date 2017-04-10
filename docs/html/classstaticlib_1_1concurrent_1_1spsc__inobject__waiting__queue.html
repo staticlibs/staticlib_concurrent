@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_concurrent
-   &#160;<span id="projectnumber">1.0</span>
+   &#160;<span id="projectnumber">1.0.1</span>
    </div>
   </td>
  </tr>
@@ -117,8 +117,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a3a24bf489ea8b4ad5bf5f9d189604d4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempt to read the value at the front to the queue into a variable.  <a href="#a3a24bf489ea8b4ad5bf5f9d189604d4f"></a><br/></td></tr>
 <tr class="memitem:a37f1e79b1ca39df3493a7ada80814e12"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1spsc__inobject__waiting__queue.html#a37f1e79b1ca39df3493a7ada80814e12">front_ptr</a> ()</td></tr>
 <tr class="memdesc:a37f1e79b1ca39df3493a7ada80814e12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a pointer to the item at the front of the queue.  <a href="#a37f1e79b1ca39df3493a7ada80814e12"></a><br/></td></tr>
-<tr class="memitem:a6023f2a344159c92782c7952f8088311"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1spsc__inobject__waiting__queue.html#a6023f2a344159c92782c7952f8088311">take</a> (T &amp;record)</td></tr>
+<tr class="memitem:a58a63915717817180be04195bd63a047"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1spsc__inobject__waiting__queue.html#a58a63915717817180be04195bd63a047">take</a> (T &amp;record, std::chrono::milliseconds timeout=std::chrono::milliseconds(0))</td></tr>
+<tr class="memdesc:a58a63915717817180be04195bd63a047"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempt to read the value at the front of the queue into a variable.  <a href="#a58a63915717817180be04195bd63a047"></a><br/></td></tr>
 <tr class="memitem:aaca1726af20838acabf1db8ba1c996f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1spsc__inobject__waiting__queue.html#aaca1726af20838acabf1db8ba1c996f5">unblock</a> ()</td></tr>
+<tr class="memdesc:aaca1726af20838acabf1db8ba1c996f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unblocks the queue allowing consumers to exit 'take' calls.  <a href="#aaca1726af20838acabf1db8ba1c996f5"></a><br/></td></tr>
 <tr class="memitem:a5c0eb7c061ad33d8d4acc56730297e8d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1spsc__inobject__waiting__queue.html#a5c0eb7c061ad33d8d4acc56730297e8d">is_unblocked</a> () const </td></tr>
 <tr class="memdesc:a5c0eb7c061ad33d8d4acc56730297e8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether this queue was unblocked.  <a href="#a5c0eb7c061ad33d8d4acc56730297e8d"></a><br/></td></tr>
 <tr class="memitem:a0c2f045bca555c806c4bb814021e6a7e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1spsc__inobject__waiting__queue.html#a0c2f045bca555c806c4bb814021e6a7e">empty</a> () const </td></tr>
@@ -483,7 +485,7 @@ template&lt;typename T , size_t Size&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a6023f2a344159c92782c7952f8088311"></a>
+<a class="anchor" id="a58a63915717817180be04195bd63a047"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -496,8 +498,18 @@ template&lt;typename T , size_t Size&gt; </div>
           <td class="memname">bool <a class="el" href="classstaticlib_1_1concurrent_1_1spsc__inobject__waiting__queue.html">staticlib::concurrent::spsc_inobject_waiting_queue</a>&lt; T, Size &gt;::take </td>
           <td>(</td>
           <td class="paramtype">T &amp;&#160;</td>
-          <td class="paramname"><em>record</em></td><td>)</td>
+          <td class="paramname"><em>record</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::chrono::milliseconds&#160;</td>
+          <td class="paramname"><em>timeout</em> = <code>std::chrono::milliseconds(0)</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -506,6 +518,17 @@ template&lt;typename T , size_t Size&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Attempt to read the value at the front of the queue into a variable. </p>
+<p>This method will wait on empty queue infinitely (by default), or up to specified amount of milliseconds</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">record</td><td>move (or copy) the value at the front of the queue to given variable </td></tr>
+    <tr><td class="paramname">timeout</td><td>max amount of milliseconds to wait on empty queue, zero value (supplied by default) will cause infinite wait </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>returns false if queue was empty after timeout, true otherwise </dd></dl>
 
 </div>
 </div>
@@ -532,6 +555,9 @@ template&lt;typename T , size_t Size&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Unblocks the queue allowing consumers to exit 'take' calls. </p>
+<p>Queue cannot be used for waiting on it after this call. </p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
@@ -540,7 +566,7 @@ template&lt;typename T , size_t Size&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 24 2017 10:32:15 for staticlib_concurrent by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 10 2017 11:07:34 for staticlib_concurrent by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
