@@ -132,7 +132,7 @@ public:
      * @param count_value new value
      * @return counter value before reset
      */
-    size_t reset(size_t count_value) {
+    size_t reset(size_t count_value = 0) {
         size_t prev = 0;
         {
             std::lock_guard<std::mutex> guard{mutex};
