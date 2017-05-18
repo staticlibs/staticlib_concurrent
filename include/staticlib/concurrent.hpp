@@ -24,6 +24,7 @@
 #ifndef STATICLIB_CONCURRENT_HPP
 #define	STATICLIB_CONCURRENT_HPP
 
+#include "staticlib/concurrent/cancelable_timer.hpp"
 #include "staticlib/concurrent/condition_latch.hpp"
 #include "staticlib/concurrent/countdown_latch.hpp"
 #include "staticlib/concurrent/growing_buffer.hpp"
