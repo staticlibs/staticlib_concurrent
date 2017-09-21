@@ -107,17 +107,17 @@ void test_intermittent() {
         test_string_generator gen{};
         for (size_t i = 0; i < 10; i++) {
             std::string str = gen.generate(42);
-                    queue.emplace(std::move(str));
+            queue.emplace(std::move(str));
         }
         std::this_thread::sleep_for(std::chrono::milliseconds{200});
         for (size_t i = 10; i < 20; i++) {
             std::string str = gen.generate(42);
-                    queue.emplace(std::move(str));
+            queue.emplace(std::move(str));
         }
         std::this_thread::sleep_for(std::chrono::milliseconds{300});
         for (size_t i = 20; i < ELEMENTS_COUNT; i++) {
             std::string str = gen.generate(42);
-                    queue.emplace(std::move(str));
+            queue.emplace(std::move(str));
         }
     });
     std::thread consumer([&] {
@@ -187,7 +187,7 @@ void test_poll() {
         }
         my_movable_str el_fail{""};
         bool success = queue.poll(el_fail);
-                slassert(!success);
+        slassert(!success);
     });
     consumer.join();
 }
@@ -196,28 +196,30 @@ void test_take_wait() {
     sl::concurrent::mpmc_blocking_queue<my_movable_str> queue{};
     std::thread producer([&queue] {
         std::this_thread::sleep_for(std::chrono::milliseconds{200});
-        queue.emplace("aaa");
-                std::this_thread::sleep_for(std::chrono::milliseconds{200});
+        auto vec = std::vector<my_movable_str>();
+        vec.emplace_back("aaa");
+        queue.emplace_range(std::move(vec));
+        std::this_thread::sleep_for(std::chrono::milliseconds{200});
         queue.emplace("bbb");
     });
     std::thread consumer([&queue] {
         // not yet available
         my_movable_str el1{""};
         bool success1 = queue.take(el1, std::chrono::milliseconds(100));
-                slassert(!success1);
-                slassert("" == el1.get_val());
-                // first received
-                my_movable_str el2{""};
+        slassert(!success1);
+        slassert("" == el1.get_val());
+        // first received
+        my_movable_str el2{""};
         bool success2 = queue.take(el2, std::chrono::milliseconds(150));
-                slassert(success2);
-                slassert("aaa" == el2.get_val());
-                // wait for next
-                std::this_thread::sleep_for(std::chrono::milliseconds{200});
+        slassert(success2);
+        slassert("aaa" == el2.get_val());
+        // wait for next
+        std::this_thread::sleep_for(std::chrono::milliseconds{200});
         // should be already there
         my_movable_str el3{""};
         bool success3 = queue.take(el3, std::chrono::milliseconds(10));
-                slassert(success3);
-                slassert("bbb" == el3.get_val());
+        slassert(success3);
+        slassert("bbb" == el3.get_val());
     });
 
     producer.join();

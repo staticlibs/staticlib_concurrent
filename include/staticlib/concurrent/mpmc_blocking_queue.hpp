@@ -116,6 +116,9 @@ public:
                 break;
             }
         }
+        if (0 == origin_size) {
+            empty_cv.notify_all();
+        }
         return queue.size() - origin_size;
     }
 
@@ -136,6 +139,9 @@ public:
             } else {
                 break;
             }
+        }
+        if (0 == origin_size) {
+            empty_cv.notify_all();
         }
         return queue.size() - origin_size;
     }
