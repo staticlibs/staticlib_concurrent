@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>staticlib_concurrent: staticlib/concurrent/mpmc_blocking_queue.hpp File Reference</title>
+<title>staticlib_concurrent: staticlib/concurrent/cancelable_timer.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,23 +88,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a>  </div>
   <div class="headertitle">
-<div class="title">mpmc_blocking_queue.hpp File Reference</div>  </div>
+<div class="title">cancelable_timer.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstdint&gt;</code><br/>
-<code>#include &lt;chrono&gt;</code><br/>
-<code>#include &lt;condition_variable&gt;</code><br/>
-<code>#include &lt;deque&gt;</code><br/>
-<code>#include &lt;limits&gt;</code><br/>
+<div class="textblock"><code>#include &lt;chrono&gt;</code><br/>
+<code>#include &lt;functional&gt;</code><br/>
 <code>#include &lt;memory&gt;</code><br/>
 <code>#include &lt;mutex&gt;</code><br/>
+<code>#include &lt;system_error&gt;</code><br/>
 </div>
-<p><a href="mpmc__blocking__queue_8hpp_source.html">Go to the source code of this file.</a></p>
+<p><a href="cancelable__timer_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1mpmc__blocking__queue.html">staticlib::concurrent::mpmc_blocking_queue&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optionally bounded growing FIFO blocking queue with support for blocking and non-blocking multiple consumers and always non-blocking multiple producers.  <a href="classstaticlib_1_1concurrent_1_1mpmc__blocking__queue.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1concurrent_1_1cancelable__timer.html">staticlib::concurrent::cancelable_timer&lt; Timer &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper class used to time-out operations.  <a href="classstaticlib_1_1concurrent_1_1cancelable__timer.html#details">More...</a><br/></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="namespaces"></a>
 Namespaces</h2></td></tr>

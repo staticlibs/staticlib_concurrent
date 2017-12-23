@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_concurrent
-   &#160;<span id="projectnumber">1.0.1</span>
+   &#160;<span id="projectnumber">1.0.2</span>
    </div>
   </td>
  </tr>
@@ -150,7 +150,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        }</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        std::memcpy(<a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a314f16dcb25cedaccf5e0aa034a69284" title="Pointer to stored data.">data</a>(), other.<a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a314f16dcb25cedaccf5e0aa034a69284" title="Pointer to stored data.">data</a>(), length);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
 <div class="line"><a name="l00082"></a><span class="lineno"><a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a4f21fa4153b76aacbfefae663473123a">   82</a></span>&#160;    <a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html" title="Non-shrinkable char heap buffer with non-destructive move (the same as copy) logic, grows if needed on move-in operation.">growing_buffer</a>&amp; <a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a4f21fa4153b76aacbfefae663473123a" title="Copy assignment operator.">operator=</a>(<span class="keyword">const</span> <a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html" title="Non-shrinkable char heap buffer with non-destructive move (the same as copy) logic, grows if needed on move-in operation.">growing_buffer</a>&amp; other) {</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a451712f43b130803c0e471c0f2a3aa23" title="Resize buffer extending data storage if necessary.">resize</a>(other.length);</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        std::memcpy(buf.get(), other.<a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a314f16dcb25cedaccf5e0aa034a69284" title="Pointer to stored data.">data</a>(), length);</div>
@@ -166,7 +166,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        }</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        length = new_size;</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
 <div class="line"><a name="l00108"></a><span class="lineno"><a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a314f16dcb25cedaccf5e0aa034a69284">  108</a></span>&#160;    <span class="keywordtype">char</span>* <a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a314f16dcb25cedaccf5e0aa034a69284" title="Pointer to stored data.">data</a>() {</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keywordflow">return</span> buf.get();</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
@@ -177,18 +177,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    </div>
 <div class="line"><a name="l00126"></a><span class="lineno"><a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a7590e08e06ef19ec7045ba6b0bd24d3b">  126</a></span>&#160;    <span class="keywordtype">size_t</span> <a class="code" href="classstaticlib_1_1concurrent_1_1growing__buffer.html#a7590e08e06ef19ec7045ba6b0bd24d3b" title="Buffer size.">size</a>()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keywordflow">return</span> length;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    }   </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    }</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;};</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;} <span class="comment">// namespace</span></div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">/* STATICLIB_CONCURRENT_GROWING_BUFFER_HPP */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* STATICLIB_CONCURRENT_GROWING_BUFFER_HPP */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 10 2017 11:07:34 for staticlib_concurrent by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Dec 23 2017 16:38:49 for staticlib_concurrent by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
