@@ -21,7 +21,7 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       SL_CMAKE_VS: 15 2017
 
-clone_folder: c:\projects\staticlib_io
+clone_folder: c:\projects\staticlib_concurrent
 
 install:
   - cd ..
@@ -36,7 +36,7 @@ build: off
 build_script:
   - mkdir build
   - cd build
-  - cmake ../staticlib_io/test
+  - cmake ../staticlib_concurrent/test
         -G "Visual Studio %SL_CMAKE_VS% Win64"
         -DSTATICLIB_TOOLCHAIN=windows_amd64_msvc
         -DCMAKE_BUILD_TYPE=Release
