@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_CONCURRENT_SPSC_WAITING_QUEUE_HPP
-#define	STATICLIB_CONCURRENT_SPSC_WAITING_QUEUE_HPP
+#define STATICLIB_CONCURRENT_SPSC_WAITING_QUEUE_HPP
 
 #include <cstdint>
 #include <atomic>
@@ -50,7 +50,7 @@ public:
      * Type of elements
      */
     using value_type = T;
-    
+
     explicit spsc_waiting_queue(size_t size) :
     queue(size) { }
 
@@ -201,5 +201,5 @@ public:
 } // namespace
 }
 
-#endif	/* STATICLIB_CONCURRENT_SPSC_WAITING_QUEUE_HPP */
+#endif /* STATICLIB_CONCURRENT_SPSC_WAITING_QUEUE_HPP */
 

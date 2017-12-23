@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_CONCURRENT_HPP
-#define	STATICLIB_CONCURRENT_HPP
+#define STATICLIB_CONCURRENT_HPP
 
 #include "staticlib/concurrent/cancelable_timer.hpp"
 #include "staticlib/concurrent/condition_latch.hpp"
@@ -37,5 +37,5 @@
 // export namespace with shorter name
 namespace sl = staticlib;
 
-#endif	/* STATICLIB_CONCURRENT_HPP */
+#endif /* STATICLIB_CONCURRENT_HPP */
 

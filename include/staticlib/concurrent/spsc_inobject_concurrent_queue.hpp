@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP
-#define	STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP
+#define STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP
 
 #include <cstdint>
 #include <atomic>
@@ -211,10 +211,10 @@ public:
     size_t max_size() const {
         return ring_size - 1;
     }
-};    
-    
+};
+
 } // namespace
 }
 
-#endif	/* STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP */
+#endif /* STATICLIB_CONCURRENT_SPSC_INOBJECT_CONCURRENT_QUEUE_HPP */
 

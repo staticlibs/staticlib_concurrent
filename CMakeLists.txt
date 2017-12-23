@@ -15,7 +15,7 @@
 cmake_minimum_required ( VERSION 2.8.12 )
 
 project ( staticlib_concurrent CXX )
-set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.0.1 )
+set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.0.2 )
 set ( ${PROJECT_NAME}_DESCRIPTION "Staticlibs concurrent library" )
 set ( ${PROJECT_NAME}_URL https://github.com/staticlibs/staticlib_concurrent )
 
@@ -24,11 +24,6 @@ option ( ${PROJECT_NAME}_ENABLE_DOCS "Generate doxyfile and exit build" OFF )
 if ( ${PROJECT_NAME}_ENABLE_DOCS )
     configure_file ( ${CMAKE_CURRENT_LIST_DIR}/resources/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile )
     return ( )
-endif ( )
-
-# standalone build
-if ( NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY )
-    set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} )
 endif ( )
 
 # target

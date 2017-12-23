@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_CONCURRENT_TEST_SUPPORT_HPP
-#define	STATICLIB_CONCURRENT_TEST_SUPPORT_HPP
+#define STATICLIB_CONCURRENT_TEST_SUPPORT_HPP
 
 // source: https://github.com/facebook/folly/blob/b75ef0a0af48766298ebcc946dd31fe0da5161e3/folly/test/ProducerConsumerQueueTest.cpp
 
@@ -338,5 +338,5 @@ void test_speed_wait(Queue& queue) {
     std::cout << "millis elapsed: " << elapsed.count() << std::endl;
 }
 
-#endif	/* STATICLIB_CONCURRENT_TEST_SUPPORT_HPP */
+#endif /* STATICLIB_CONCURRENT_TEST_SUPPORT_HPP */
 

@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_CONCURRENT_MPMC_BLOCKING_QUEUE_HPP
-#define	STATICLIB_CONCURRENT_MPMC_BLOCKING_QUEUE_HPP
+#define STATICLIB_CONCURRENT_MPMC_BLOCKING_QUEUE_HPP
 
 #include <cstdint>
 #include <chrono>
@@ -52,7 +52,7 @@ public:
      * Type of elements
      */
     using value_type = T;
-    
+
     explicit mpmc_blocking_queue(size_t max_queue_size = 0) :
     max_queue_size(max_queue_size) { }
 
@@ -282,11 +282,11 @@ public:
     size_t max_size() const {
         return max_queue_size;
     }
-    
+
 };
 
 } // namespace
 }
 
-#endif	/* STATICLIB_CONCURRENT_MPMC_BLOCKING_QUEUE_HPP */
+#endif /* STATICLIB_CONCURRENT_MPMC_BLOCKING_QUEUE_HPP */
 

@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_CONCURRENT_COUNTDOWN_LATCH_HPP
-#define	STATICLIB_CONCURRENT_COUNTDOWN_LATCH_HPP
+#define STATICLIB_CONCURRENT_COUNTDOWN_LATCH_HPP
 
 #include <cstdint>
 #include <chrono>
@@ -41,7 +41,7 @@ class countdown_latch : public std::enable_shared_from_this<countdown_latch> {
     mutable std::mutex mutex;
     std::condition_variable cv;
     size_t count;
-    
+
 public:
     /**
      * Constructor
@@ -50,7 +50,7 @@ public:
      */
     explicit countdown_latch(size_t count) :
     count(count) { }
-    
+
     /**
      * Deleted copy constructor
      */
@@ -70,7 +70,7 @@ public:
      * Deleted move assignment operator
      */
     countdown_latch& operator=(countdown_latch&&) = delete;
-    
+
     /**
      * Wait until the counter will go to zero
      */
@@ -95,7 +95,7 @@ public:
             return 0 == count;
         });
     }
-    
+
     /**
      * Decrement counter by 1
      * 
@@ -115,7 +115,7 @@ public:
         }
         return updated;
     }
-    
+
     /**
      * Get current counter value
      * 
@@ -125,7 +125,7 @@ public:
         std::lock_guard<std::mutex> guard{mutex};
         return count;
     }
-    
+
     /**
      * Reset counter to new value
      * 
@@ -144,11 +144,11 @@ public:
         }
         return prev;
     }
-    
+
 };
 
 } // namespace
 }
 
-#endif	/* STATICLIB_CONCURRENT_COUNTDOWN_LATCH_HPP */
+#endif /* STATICLIB_CONCURRENT_COUNTDOWN_LATCH_HPP */
 

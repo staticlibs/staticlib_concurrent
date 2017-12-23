@@ -1,6 +1,9 @@
 Staticlibs Concurrent library
 =============================
 
+[![travis](https://travis-ci.org/staticlibs/staticlib_concurrent.svg?branch=master)](https://travis-ci.org/staticlibs/staticlib_concurrent)
+[![appveyor](https://ci.appveyor.com/api/projects/status/github/staticlibs/staticlib_concurrent?svg=true)](https://ci.appveyor.com/project/staticlibs/staticlib-concurrent)
+
 This project is a part of [Staticlibs](http://staticlibs.net/).
 
 This project contains the following concurrency-related templates:
@@ -34,6 +37,10 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**2017-12-22**
+ * version 1.0.2
+ * vs2017 support
 
 **2017-04-10**
 

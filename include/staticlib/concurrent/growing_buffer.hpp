@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_CONCURRENT_GROWING_BUFFER_HPP
-#define	STATICLIB_CONCURRENT_GROWING_BUFFER_HPP
+#define STATICLIB_CONCURRENT_GROWING_BUFFER_HPP
 
 #include <cstdint>
 #include <cstdlib>
@@ -72,7 +72,7 @@ public:
         }
         std::memcpy(data(), other.data(), length);
     }
-    
+
     /**
      * Copy assignment operator
      * 
@@ -99,7 +99,7 @@ public:
         }
         length = new_size;
     }
-    
+
     /**
      * Pointer to stored data
      * 
@@ -125,11 +125,11 @@ public:
      */
     size_t size() const {
         return length;
-    }   
+    }
 };
 
 } // namespace
 }
 
-#endif	/* STATICLIB_CONCURRENT_GROWING_BUFFER_HPP */
+#endif /* STATICLIB_CONCURRENT_GROWING_BUFFER_HPP */
 
