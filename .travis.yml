@@ -77,7 +77,8 @@ script:
     `# Ubuntu` ;
     lsb_release -a ;
     cmake ../staticlib_concurrent/test -DCMAKE_BUILD_TYPE=Release ;
-    make all test ;
+    `# https://stackoverflow.com/a/20616102/314015` ;
+    make all test LD_PRELOAD=/lib/x86_64-linux-gnu/libpthread.so.0;
 
     `# Fedora` ;
     $D cat /etc/fedora-release ;
