@@ -35,8 +35,8 @@ class test_timer {
     bool cancel_called = false;
     
 public:
-    void expires_from_now(std::chrono::microseconds millis) {
-        this->millis = millis;
+    void expires_from_now(std::chrono::microseconds ms) {
+        this->millis = ms;
     }
     
     void async_wait(std::function<void(const std::error_code&)> timeout_handler) {
