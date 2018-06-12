@@ -38,7 +38,13 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 Changelog
 ---------
 
+**2018-06-12**
+
+ * version 1.0.3
+ * drop timer wrapper
+
 **2017-12-22**
+
  * version 1.0.2
  * vs2017 support
 

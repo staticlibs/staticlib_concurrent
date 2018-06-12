@@ -15,7 +15,7 @@
 cmake_minimum_required ( VERSION 2.8.12 )
 
 project ( staticlib_concurrent CXX )
-set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.0.2 )
+set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.0.3 )
 set ( ${PROJECT_NAME}_DESCRIPTION "Staticlibs concurrent library" )
 set ( ${PROJECT_NAME}_URL https://github.com/staticlibs/staticlib_concurrent )
 
